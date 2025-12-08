@@ -53,7 +53,9 @@ import {
   Pause,
   Lock,
   Unlock,
-  Book
+  Book,
+  Flame,
+  PlayCircle
 } from 'lucide-react';
 import {
   RadarChart,
@@ -78,6 +80,7 @@ import {
 } from 'recharts';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -2683,12 +2686,1070 @@ function ImprovementTipsCard() {
 // 6. LEARNING TAB
 // ============================================================================
 
+// ============================================================================
+// 6. LEARNING JOURNEY TAB
+// ============================================================================
+
 function LearningTab() {
+  const [selectedPath, setSelectedPath] = useState<string | null>('fullstack');
+  
   return (
-    <div className="bg-white rounded-3xl p-8 border-2 border-gray-200 shadow-xl">
-      <h2 className="text-2xl font-black text-gray-900 mb-6">Learning Journey</h2>
-      <p className="text-gray-600">Learning journey details coming soon...</p>
+    <div className="space-y-6">
+      {/* Page Header */}
+      <LearningHeader />
+      
+      {/* Learning Stats Overview */}
+      <LearningStatsCards />
+      
+      {/* Learning Streak & Progress */}
+      <StreakProgressSection />
+      
+      {/* Main Content Area */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Left: Learning Paths & Courses (2/3) */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Learning Path Roadmap */}
+          <LearningPathRoadmap 
+            selectedPath={selectedPath}
+            setSelectedPath={setSelectedPath}
+          />
+          
+          {/* Active Courses */}
+          <ActiveCoursesSection />
+          
+          {/* Completed Courses */}
+          <CompletedCoursesSection />
+        </div>
+        
+        {/* Right: Sidebar (1/3) */}
+        <div className="space-y-6">
+          {/* Learning Goals */}
+          <LearningGoalsCard />
+          
+          {/* Achievements & Badges */}
+          <AchievementsBadgesCard />
+          
+          {/* Certifications */}
+          <LearningCertificationsCard />
+          
+          {/* Recommended Courses */}
+          <RecommendedCoursesCard />
+        </div>
+      </div>
+      
+      {/* Learning Timeline */}
+      <LearningTimeline />
     </div>
+  );
+}
+
+// ============================================================================
+// LEARNING HEADER
+// ============================================================================
+
+function LearningHeader() {
+  return (
+    <div className="flex items-center justify-between">
+      <div>
+        <h2 className="text-3xl font-black text-gray-900 mb-2 flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+            <GraduationCap className="w-6 h-6 text-white" />
+          </div>
+          Learning Journey
+        </h2>
+        <p className="text-gray-600 font-semibold">
+          Track progress, complete courses, and unlock new skills on your path to mastery
+        </p>
+      </div>
+      
+      <div className="flex gap-3">
+        <button className="px-4 py-2 bg-white hover:bg-gray-50 rounded-xl font-semibold text-gray-700 border-2 border-gray-200 transition-all flex items-center gap-2">
+          <Download className="w-4 h-4" />
+          Export Report
+        </button>
+        <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl font-semibold shadow-lg transition-all flex items-center gap-2">
+          <Plus className="w-4 h-4" />
+          Add Course
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// LEARNING STATS CARDS
+// ============================================================================
+
+function LearningStatsCards() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      {/* Total Hours */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0 }}
+        className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-6 text-white shadow-xl shadow-blue-500/30 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <Clock className="w-8 h-8 mb-3 relative z-10" />
+        <div className="text-4xl font-black mb-1 relative z-10">124h</div>
+        <div className="text-sm font-semibold opacity-90 relative z-10">Learning Hours</div>
+        <div className="text-xs mt-2 opacity-75 relative z-10">+18h this month</div>
+      </motion.div>
+      
+      {/* Courses Completed */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="bg-gradient-to-br from-green-500 to-green-600 rounded-3xl p-6 text-white shadow-xl shadow-green-500/30 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <CheckCircle2 className="w-8 h-8 mb-3 relative z-10" />
+        <div className="text-4xl font-black mb-1 relative z-10">28</div>
+        <div className="text-sm font-semibold opacity-90 relative z-10">Courses Done</div>
+        <div className="text-xs mt-2 opacity-75 relative z-10">+5 this year</div>
+      </motion.div>
+      
+      {/* Certificates */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl shadow-purple-500/30 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <Award className="w-8 h-8 mb-3 relative z-10" />
+        <div className="text-4xl font-black mb-1 relative z-10">12</div>
+        <div className="text-sm font-semibold opacity-90 relative z-10">Certificates</div>
+        <div className="text-xs mt-2 opacity-75 relative z-10">Verified</div>
+      </motion.div>
+      
+      {/* Learning Streak */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-3xl p-6 text-white shadow-xl shadow-amber-500/30 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <Flame className="w-8 h-8 mb-3 relative z-10" />
+        <div className="text-4xl font-black mb-1 relative z-10">15</div>
+        <div className="text-sm font-semibold opacity-90 relative z-10">Day Streak</div>
+        <div className="text-xs mt-2 opacity-75 relative z-10">Keep it up! 🔥</div>
+      </motion.div>
+      
+      {/* Skill Level */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="bg-gradient-to-br from-pink-500 to-rose-500 rounded-3xl p-6 text-white shadow-xl shadow-pink-500/30 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <Zap className="w-8 h-8 mb-3 relative z-10" />
+        <div className="text-4xl font-black mb-1 relative z-10">Lvl 8</div>
+        <div className="text-sm font-semibold opacity-90 relative z-10">Skill Level</div>
+        <div className="text-xs mt-2 opacity-75 relative z-10">Expert tier</div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ============================================================================
+// STREAK & PROGRESS SECTION
+// ============================================================================
+
+function StreakProgressSection() {
+  const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const dailyProgress = [true, true, true, true, true, false, false]; // Last 7 days
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-8 border-2 border-gray-200 shadow-xl"
+    >
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h3 className="text-2xl font-black text-gray-900 mb-2 flex items-center gap-2">
+            <Flame className="w-7 h-7 text-orange-500" />
+            Learning Streak
+          </h3>
+          <p className="text-gray-600 font-semibold">
+            You're on a 15-day streak! Keep learning to maintain it.
+          </p>
+        </div>
+        
+        <div className="text-right">
+          <div className="text-5xl font-black text-orange-500">15</div>
+          <div className="text-sm text-gray-600 font-semibold">days in a row</div>
+        </div>
+      </div>
+      
+      {/* Weekly Calendar */}
+      <div className="grid grid-cols-7 gap-3">
+        {weekDays.map((day, index) => (
+          <div key={day} className="text-center">
+            <div className="text-xs text-gray-600 font-semibold mb-2">{day}</div>
+            <div className={cn(
+              "w-full aspect-square rounded-xl flex items-center justify-center transition-all",
+              dailyProgress[index]
+                ? "bg-gradient-to-br from-orange-500 to-amber-500 shadow-lg"
+                : "bg-gray-100 border-2 border-gray-200 border-dashed"
+            )}>
+              {dailyProgress[index] ? (
+                <Flame className="w-6 h-6 text-white" />
+              ) : (
+                <div className="w-2 h-2 bg-gray-300 rounded-full" />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      {/* Progress Bar */}
+      <div className="mt-6 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl border-2 border-orange-200">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-bold text-gray-900">Next Milestone: 30 days</span>
+          <span className="text-sm font-bold text-orange-600">50% there</span>
+        </div>
+        <div className="h-3 bg-white rounded-full overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: '50%' }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="h-full bg-gradient-to-r from-orange-500 to-amber-500"
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// LEARNING PATH ROADMAP
+// ============================================================================
+
+function LearningPathRoadmap({ selectedPath, setSelectedPath }: any) {
+  const paths = [
+    {
+      id: 'fullstack',
+      name: 'Full Stack Developer Path',
+      progress: 65,
+      icon: '🚀',
+      color: 'from-blue-500 to-indigo-500',
+      totalCourses: 12,
+      completedCourses: 8,
+      estimatedWeeks: 8,
+      status: 'active'
+    },
+    {
+      id: 'cloud',
+      name: 'AWS Cloud Architect Path',
+      progress: 40,
+      icon: '☁️',
+      color: 'from-orange-500 to-amber-500',
+      totalCourses: 10,
+      completedCourses: 4,
+      estimatedWeeks: 12,
+      status: 'active'
+    },
+    {
+      id: 'systemdesign',
+      name: 'System Design Mastery',
+      progress: 25,
+      icon: '🏗️',
+      color: 'from-purple-500 to-pink-500',
+      totalCourses: 8,
+      completedCourses: 2,
+      estimatedWeeks: 10,
+      status: 'active'
+    },
+  ];
+  
+  const milestones = [
+    { 
+      id: 1, 
+      title: 'React Fundamentals', 
+      status: 'completed',
+      course: 'React Complete Guide',
+      platform: 'Udemy',
+      duration: '12h',
+      completedDate: 'Jun 2024'
+    },
+    { 
+      id: 2, 
+      title: 'TypeScript Mastery', 
+      status: 'completed',
+      course: 'TypeScript Advanced',
+      platform: 'Coursera',
+      duration: '8h',
+      completedDate: 'Jul 2024'
+    },
+    { 
+      id: 3, 
+      title: 'Node.js Backend', 
+      status: 'completed',
+      course: 'Node.js Complete Course',
+      platform: 'Udemy',
+      duration: '15h',
+      completedDate: 'Jul 2024'
+    },
+    { 
+      id: 4, 
+      title: 'Database Design', 
+      status: 'in_progress',
+      course: 'PostgreSQL Deep Dive',
+      platform: 'Internal',
+      duration: '10h',
+      progress: 60
+    },
+    { 
+      id: 5, 
+      title: 'API Development', 
+      status: 'in_progress',
+      course: 'RESTful API Design',
+      platform: 'YouTube',
+      duration: '6h',
+      progress: 30
+    },
+    { 
+      id: 6, 
+      title: 'Deployment & DevOps', 
+      status: 'locked',
+      course: 'Docker & Kubernetes',
+      platform: 'Udemy',
+      duration: '20h',
+      unlockAfter: 'Complete Database Design'
+    },
+    { 
+      id: 7, 
+      title: 'Final Project', 
+      status: 'locked',
+      course: 'Full Stack Capstone',
+      platform: 'Internal',
+      duration: '40h',
+      unlockAfter: 'Complete all courses'
+    },
+  ];
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-8 border-2 border-gray-200 shadow-xl"
+    >
+      <h3 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-2">
+        <Target className="w-7 h-7 text-purple-600" />
+        Learning Path Roadmap
+      </h3>
+      
+      {/* Path Selector */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        {paths.map((path) => (
+          <button
+            key={path.id}
+            onClick={() => setSelectedPath(path.id)}
+            className={cn(
+              "text-left p-4 rounded-2xl border-2 transition-all",
+              selectedPath === path.id
+                ? "border-purple-500 bg-purple-50 shadow-lg"
+                : "border-gray-200 bg-white hover:border-gray-300"
+            )}
+          >
+            <div className="text-3xl mb-2">{path.icon}</div>
+            <h4 className="font-bold text-gray-900 mb-2">{path.name}</h4>
+            <div className="text-sm text-gray-600 mb-3">
+              {path.completedCourses}/{path.totalCourses} courses • {path.estimatedWeeks} weeks
+            </div>
+            <Progress value={path.progress} className="h-2" />
+            <div className="text-xs font-bold text-purple-600 mt-2">{path.progress}% complete</div>
+          </button>
+        ))}
+      </div>
+      
+      {/* Roadmap Visualization */}
+      <div className="relative">
+        {/* Vertical Line */}
+        <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-purple-500 via-blue-500 to-gray-300" />
+        
+        {/* Milestones */}
+        <div className="space-y-6">
+          {milestones.map((milestone, index) => (
+            <MilestoneNode 
+              key={milestone.id} 
+              milestone={milestone} 
+              index={index}
+            />
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function MilestoneNode({ milestone, index }: any) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'bg-green-500 border-green-600';
+      case 'in_progress': return 'bg-blue-500 border-blue-600';
+      case 'locked': return 'bg-gray-300 border-gray-400';
+      default: return 'bg-gray-200 border-gray-300';
+    }
+  };
+  
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed': return <CheckCircle2 className="w-5 h-5 text-white" />;
+      case 'in_progress': return <PlayCircle className="w-5 h-5 text-white" />;
+      case 'locked': return <Lock className="w-5 h-5 text-white" />;
+      default: return null;
+    }
+  };
+  
+  const getPlatformColor = (platform: string) => {
+    switch (platform) {
+      case 'Udemy': return 'bg-orange-100 text-orange-700';
+      case 'Coursera': return 'bg-blue-100 text-blue-700';
+      case 'YouTube': return 'bg-red-100 text-red-700';
+      case 'Internal': return 'bg-mint-100 text-mint-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.1 }}
+      className="relative pl-20"
+    >
+      {/* Node Circle */}
+      <div className={cn(
+        "absolute left-0 w-16 h-16 rounded-2xl border-4 flex items-center justify-center shadow-xl",
+        getStatusColor(milestone.status)
+      )}>
+        {getStatusIcon(milestone.status)}
+      </div>
+      
+      {/* Content Card */}
+      <div 
+        onClick={() => milestone.status !== 'locked' && setIsExpanded(!isExpanded)}
+        className={cn(
+          "bg-white rounded-2xl p-6 border-2 transition-all",
+          milestone.status === 'locked' 
+            ? "border-gray-200 opacity-60" 
+            : "border-gray-200 hover:border-gray-300 hover:shadow-lg cursor-pointer"
+        )}
+      >
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <h4 className="text-lg font-black text-gray-900">{milestone.title}</h4>
+              <span className={cn(
+                "px-2 py-1 rounded-lg text-xs font-bold",
+                getPlatformColor(milestone.platform)
+              )}>
+                {milestone.platform}
+              </span>
+            </div>
+            
+            <p className="text-sm text-gray-600 font-semibold mb-2">{milestone.course}</p>
+            
+            <div className="flex items-center gap-4 text-sm text-gray-600">
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                {milestone.duration}
+              </div>
+              {milestone.status === 'completed' && milestone.completedDate && (
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4" />
+                  {milestone.completedDate}
+                </div>
+              )}
+            </div>
+            
+            {/* Progress Bar for In Progress */}
+            {milestone.status === 'in_progress' && milestone.progress && (
+              <div className="mt-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-bold text-gray-700">Progress</span>
+                  <span className="text-xs font-bold text-blue-600">{milestone.progress}%</span>
+                </div>
+                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-blue-500 to-blue-600"
+                    style={{ width: `${milestone.progress}%` }}
+                  />
+                </div>
+              </div>
+            )}
+            
+            {/* Locked Message */}
+            {milestone.status === 'locked' && milestone.unlockAfter && (
+              <div className="mt-3 p-3 bg-gray-100 rounded-lg flex items-center gap-2">
+                <Lock className="w-4 h-4 text-gray-600" />
+                <span className="text-sm text-gray-700 font-semibold">
+                  {milestone.unlockAfter}
+                </span>
+              </div>
+            )}
+          </div>
+          
+          {/* Status Badge */}
+          <div className="ml-4">
+            {milestone.status === 'completed' && (
+              <div className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold flex items-center gap-1">
+                <CheckCircle2 className="w-4 h-4" />
+                Done
+              </div>
+            )}
+            {milestone.status === 'in_progress' && (
+              <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold flex items-center gap-1">
+                <PlayCircle className="w-4 h-4" />
+                In Progress
+              </div>
+            )}
+            {milestone.status === 'locked' && (
+              <div className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-bold flex items-center gap-1">
+                <Lock className="w-4 h-4" />
+                Locked
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Expanded Actions */}
+        <AnimatePresence>
+          {isExpanded && milestone.status !== 'locked' && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="mt-4 pt-4 border-t border-gray-200"
+            >
+              <div className="flex gap-2">
+                {milestone.status === 'in_progress' && (
+                  <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold text-sm transition-all flex items-center gap-2">
+                    <PlayCircle className="w-4 h-4" />
+                    Continue Learning
+                  </button>
+                )}
+                {milestone.status === 'completed' && (
+                  <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-sm transition-all flex items-center gap-2">
+                    <Award className="w-4 h-4" />
+                    View Certificate
+                  </button>
+                )}
+                <button className="px-4 py-2 bg-white hover:bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold text-sm text-gray-700 transition-all flex items-center gap-2">
+                  <ExternalLink className="w-4 h-4" />
+                  Open Course
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// ACTIVE COURSES SECTION
+// ============================================================================
+
+function ActiveCoursesSection() {
+  const activeCourses = [
+    {
+      id: 1,
+      title: 'PostgreSQL Deep Dive',
+      platform: 'Internal',
+      instructor: 'Sarah Chen',
+      progress: 60,
+      totalHours: 10,
+      completedHours: 6,
+      thumbnail: '🗄️',
+      color: 'from-mint-500 to-green-500',
+      lastAccessed: '2 hours ago',
+      nextLesson: 'Advanced Joins and Subqueries',
+      dueDate: 'Sep 15, 2024'
+    },
+    {
+      id: 2,
+      title: 'RESTful API Design',
+      platform: 'YouTube',
+      instructor: 'Tech With Tim',
+      progress: 30,
+      totalHours: 6,
+      completedHours: 1.8,
+      thumbnail: '🔌',
+      color: 'from-red-500 to-rose-500',
+      lastAccessed: '1 day ago',
+      nextLesson: 'Authentication & Authorization',
+      dueDate: 'Sep 20, 2024'
+    },
+    {
+      id: 3,
+      title: 'React Performance Optimization',
+      platform: 'Udemy',
+      instructor: 'Maximilian Schwarzmüller',
+      progress: 15,
+      totalHours: 8,
+      completedHours: 1.2,
+      thumbnail: '⚡',
+      color: 'from-blue-500 to-cyan-500',
+      lastAccessed: '3 days ago',
+      nextLesson: 'Memoization Techniques',
+      dueDate: 'Sep 25, 2024'
+    },
+  ];
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-8 border-2 border-gray-200 shadow-xl"
+    >
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+          <PlayCircle className="w-7 h-7 text-blue-600" />
+          Active Courses
+        </h3>
+        <span className="text-sm font-semibold text-gray-600">{activeCourses.length} in progress</span>
+      </div>
+      
+      <div className="space-y-4">
+        {activeCourses.map((course, index) => (
+          <motion.div
+            key={course.id}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="bg-gray-50 rounded-2xl p-6 hover:bg-gray-100 transition-all cursor-pointer border-2 border-transparent hover:border-gray-200"
+          >
+            <div className="flex items-start gap-4">
+              {/* Thumbnail */}
+              <div className={cn(
+                "w-20 h-20 rounded-2xl bg-gradient-to-br flex items-center justify-center text-3xl shadow-lg flex-shrink-0",
+                course.color
+              )}>
+                {course.thumbnail}
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <h4 className="font-black text-gray-900 mb-1">{course.title}</h4>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <span className="font-semibold">{course.instructor}</span>
+                      <span>•</span>
+                      <span className={cn(
+                        "px-2 py-0.5 rounded-lg text-xs font-bold",
+                        course.platform === 'Udemy' && "bg-orange-100 text-orange-700",
+                        course.platform === 'YouTube' && "bg-red-100 text-red-700",
+                        course.platform === 'Internal' && "bg-mint-100 text-mint-700"
+                      )}>
+                        {course.platform}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <span className="text-2xl font-black text-blue-600">{course.progress}%</span>
+                </div>
+                
+                {/* Progress Bar */}
+                <div className="mb-3">
+                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-blue-500 to-blue-600"
+                      style={{ width: `${course.progress}%` }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between mt-1 text-xs text-gray-600 font-semibold">
+                    <span>{course.completedHours}h / {course.totalHours}h</span>
+                    <span>{course.totalHours - course.completedHours}h remaining</span>
+                  </div>
+                </div>
+                
+                {/* Info Row */}
+                <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    {course.lastAccessed}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-4 h-4" />
+                    Due {course.dueDate}
+                  </div>
+                </div>
+                
+                {/* Next Lesson */}
+                <div className="p-3 bg-blue-50 rounded-lg border-2 border-blue-200 mb-3">
+                  <div className="text-xs text-blue-700 font-bold mb-1">Up Next:</div>
+                  <div className="text-sm font-bold text-gray-900">{course.nextLesson}</div>
+                </div>
+                
+                {/* Actions */}
+                <div className="flex gap-2">
+                  <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold text-sm transition-all flex items-center gap-2">
+                    <PlayCircle className="w-4 h-4" />
+                    Continue
+                  </button>
+                  <button className="px-4 py-2 bg-white hover:bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold text-sm text-gray-700 transition-all">
+                    Details
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// COMPLETED COURSES SECTION
+// ============================================================================
+
+function CompletedCoursesSection() {
+  const completedCourses = [
+    {
+      id: 1,
+      title: 'React Complete Guide',
+      platform: 'Udemy',
+      instructor: 'Maximilian Schwarzmüller',
+      completedDate: 'Jun 15, 2024',
+      duration: '12h',
+      thumbnail: '⚛️',
+      color: 'from-blue-500 to-cyan-500',
+      certificate: true,
+      rating: 5
+    },
+    {
+      id: 2,
+      title: 'TypeScript Advanced',
+      platform: 'Coursera',
+      instructor: 'Dr. Angela Yu',
+      completedDate: 'Jul 10, 2024',
+      duration: '8h',
+      thumbnail: '📘',
+      color: 'from-blue-600 to-indigo-600',
+      certificate: true,
+      rating: 5
+    },
+    {
+      id: 3,
+      title: 'Node.js Complete Course',
+      platform: 'Udemy',
+      instructor: 'Jonas Schmedtmann',
+      completedDate: 'Jul 25, 2024',
+      duration: '15h',
+      thumbnail: '🟢',
+      color: 'from-green-500 to-emerald-500',
+      certificate: true,
+      rating: 5
+    },
+  ];
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-8 border-2 border-gray-200 shadow-xl"
+    >
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+          <CheckCircle2 className="w-7 h-7 text-green-600" />
+          Completed Courses
+        </h3>
+        <span className="text-sm font-semibold text-gray-600">{completedCourses.length} completed</span>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {completedCourses.map((course, index) => (
+          <motion.div
+            key={course.id}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.1 }}
+            className="bg-gray-50 rounded-2xl p-6 hover:bg-gray-100 transition-all cursor-pointer border-2 border-transparent hover:border-gray-200"
+          >
+            <div className={cn(
+              "w-16 h-16 rounded-2xl bg-gradient-to-br flex items-center justify-center text-2xl shadow-lg mb-4",
+              course.color
+            )}>
+              {course.thumbnail}
+            </div>
+            <h4 className="font-black text-gray-900 mb-2">{course.title}</h4>
+            <div className="text-sm text-gray-600 mb-3">
+              <div className="font-semibold">{course.instructor}</div>
+              <div className="flex items-center gap-2 mt-1">
+                <Calendar className="w-3 h-3" />
+                {course.completedDate}
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                {[...Array(course.rating)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+              {course.certificate && (
+                <Award className="w-5 h-5 text-green-600" />
+              )}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// LEARNING GOALS CARD
+// ============================================================================
+
+function LearningGoalsCard() {
+  const goals = [
+    { id: 1, title: 'Complete Full Stack Path', progress: 65, target: 100, dueDate: 'Dec 2024', color: 'blue' },
+    { id: 2, title: 'Earn AWS Certification', progress: 40, target: 100, dueDate: 'Nov 2024', color: 'orange' },
+    { id: 3, title: 'Master System Design', progress: 25, target: 100, dueDate: 'Jan 2025', color: 'purple' },
+  ];
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-6 border-2 border-gray-200 shadow-xl"
+    >
+      <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+        <Target className="w-6 h-6 text-purple-600" />
+        Learning Goals
+      </h3>
+      
+      <div className="space-y-4">
+        {goals.map((goal) => (
+          <div key={goal.id} className="p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-bold text-gray-900 text-sm">{goal.title}</h4>
+              <span className="text-xs font-bold text-gray-600">{goal.progress}%</span>
+            </div>
+            <Progress value={goal.progress} className="h-2 mb-2" />
+            <div className="flex items-center justify-between text-xs text-gray-600">
+              <span>Due {goal.dueDate}</span>
+              <span className="font-semibold">{goal.progress}/{goal.target}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <button className="w-full mt-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2">
+        <Plus className="w-4 h-4" />
+        Add Goal
+      </button>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// ACHIEVEMENTS & BADGES CARD
+// ============================================================================
+
+function AchievementsBadgesCard() {
+  const achievements = [
+    { id: 1, name: 'Early Bird', icon: '🌅', description: 'Completed 5 courses before 9 AM', unlocked: true },
+    { id: 2, name: 'Night Owl', icon: '🦉', description: 'Learned 10 hours after midnight', unlocked: true },
+    { id: 3, name: 'Streak Master', icon: '🔥', description: '30-day learning streak', unlocked: false },
+    { id: 4, name: 'Speed Learner', icon: '⚡', description: 'Complete course in 1 day', unlocked: true },
+  ];
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-6 border-2 border-amber-200 shadow-xl"
+    >
+      <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+        <Trophy className="w-6 h-6 text-amber-600" />
+        Achievements
+      </h3>
+      
+      <div className="grid grid-cols-2 gap-3">
+        {achievements.map((achievement) => (
+          <div
+            key={achievement.id}
+            className={cn(
+              "p-4 rounded-xl text-center border-2 transition-all",
+              achievement.unlocked
+                ? "bg-white border-amber-300 shadow-md"
+                : "bg-gray-100 border-gray-300 opacity-50"
+            )}
+          >
+            <div className="text-3xl mb-2">{achievement.icon}</div>
+            <div className={cn(
+              "text-xs font-bold mb-1",
+              achievement.unlocked ? "text-gray-900" : "text-gray-500"
+            )}>
+              {achievement.name}
+            </div>
+            {achievement.unlocked && (
+              <div className="text-xs text-gray-600">{achievement.description}</div>
+            )}
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// LEARNING CERTIFICATIONS CARD
+// ============================================================================
+
+function LearningCertificationsCard() {
+  const certifications = [
+    { id: 1, name: 'React Developer', issuer: 'Udemy', date: 'Jun 2024', verified: true },
+    { id: 2, name: 'TypeScript Expert', issuer: 'Coursera', date: 'Jul 2024', verified: true },
+    { id: 3, name: 'Node.js Professional', issuer: 'Udemy', date: 'Jul 2024', verified: true },
+  ];
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-6 border-2 border-gray-200 shadow-xl"
+    >
+      <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+        <Award className="w-6 h-6 text-purple-600" />
+        Certifications
+      </h3>
+      
+      <div className="space-y-3">
+        {certifications.map((cert) => (
+          <div key={cert.id} className="p-4 bg-purple-50 rounded-xl border-2 border-purple-200">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-bold text-gray-900 text-sm">{cert.name}</h4>
+              {cert.verified && (
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+              )}
+            </div>
+            <div className="text-xs text-gray-600">
+              <div className="font-semibold">{cert.issuer}</div>
+              <div className="flex items-center gap-1 mt-1">
+                <Calendar className="w-3 h-3" />
+                {cert.date}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <button className="w-full mt-4 py-2 bg-white hover:bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold text-sm text-gray-700 transition-all">
+        View All Certificates
+      </button>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// RECOMMENDED COURSES CARD
+// ============================================================================
+
+function RecommendedCoursesCard() {
+  const recommendations = [
+    { id: 1, title: 'Docker & Kubernetes', platform: 'Udemy', duration: '20h', color: 'blue' },
+    { id: 2, title: 'GraphQL Mastery', platform: 'Coursera', duration: '12h', color: 'pink' },
+    { id: 3, title: 'Microservices Architecture', platform: 'Internal', duration: '15h', color: 'purple' },
+  ];
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-6 border-2 border-blue-200 shadow-xl"
+    >
+      <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+        <Lightbulb className="w-6 h-6 text-blue-600" />
+        Recommended
+      </h3>
+      
+      <div className="space-y-3">
+        {recommendations.map((rec) => (
+          <div key={rec.id} className="p-4 bg-white rounded-xl border-2 border-gray-200 hover:border-blue-300 transition-all cursor-pointer">
+            <h4 className="font-bold text-gray-900 text-sm mb-1">{rec.title}</h4>
+            <div className="flex items-center justify-between text-xs text-gray-600">
+              <span>{rec.platform}</span>
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                {rec.duration}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <button className="w-full mt-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold text-sm transition-all">
+        Explore More
+      </button>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// LEARNING TIMELINE
+// ============================================================================
+
+function LearningTimeline() {
+  const timelineEvents = [
+    { date: 'Aug 15, 2024', event: 'Completed Full Stack Assessment', type: 'assessment', icon: FileText },
+    { date: 'Aug 10, 2024', event: 'Earned React Developer Certificate', type: 'certificate', icon: Award },
+    { date: 'Aug 5, 2024', event: 'Started PostgreSQL Deep Dive', type: 'course', icon: BookOpen },
+    { date: 'Jul 25, 2024', event: 'Completed Node.js Course', type: 'course', icon: CheckCircle2 },
+    { date: 'Jul 20, 2024', event: 'Achieved 10-day learning streak', type: 'achievement', icon: Flame },
+    { date: 'Jul 10, 2024', event: 'Completed TypeScript Advanced', type: 'course', icon: CheckCircle2 },
+  ];
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-8 border-2 border-gray-200 shadow-xl"
+    >
+      <h3 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-2">
+        <Calendar className="w-7 h-7 text-purple-600" />
+        Learning Timeline
+      </h3>
+      
+      <div className="relative">
+        {/* Vertical Line */}
+        <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-purple-500 to-gray-300" />
+        
+        <div className="space-y-6">
+          {timelineEvents.map((event, index) => {
+            const Icon = event.icon;
+            return (
+              <div key={index} className="relative pl-20">
+                {/* Icon Circle */}
+                <div className="absolute left-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-xl">
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                
+                {/* Content */}
+                <div className="bg-gray-50 rounded-2xl p-4 border-2 border-gray-200">
+                  <div className="text-xs text-gray-600 font-semibold mb-1">{event.date}</div>
+                  <div className="font-bold text-gray-900">{event.event}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
