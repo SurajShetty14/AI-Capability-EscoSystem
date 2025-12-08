@@ -8,6 +8,7 @@ type DashboardMode = "employees" | "hiring"
 interface ModeStore {
   mode: DashboardMode
   setMode: (mode: DashboardMode) => void
+  toggleMode: () => void
 }
 
 export const useModeStore = create<ModeStore>()(
@@ -15,6 +16,10 @@ export const useModeStore = create<ModeStore>()(
     (set) => ({
       mode: "employees",
       setMode: (mode) => set({ mode }),
+      toggleMode: () =>
+        set((state) => ({
+          mode: state.mode === "employees" ? "hiring" : "employees",
+        })),
     }),
     {
       name: "dashboard-mode",

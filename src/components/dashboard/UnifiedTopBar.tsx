@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Search, Zap, Bell, HelpCircle, User, Settings, LogOut, Home, Plus, FileText, Users, BarChart3, MoreHorizontal, ChevronDown } from "lucide-react"
+import { Search as SearchIcon, Zap, Bell, HelpCircle, User, Settings, LogOut, Home, Plus, FileText, Users, BarChart3, MoreHorizontal, ChevronDown, Target, TrendingUp, Calendar, GraduationCap, Briefcase, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -18,8 +18,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAuthStore } from "@/store/auth-store"
 import { useNotificationStore } from "@/store/notification-store"
+import { useModeStore } from "@/store/mode-store"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
+import ModeIndicator from "./ModeIndicator"
+import MobileNav from "./MobileNav"
 
 const mockNotifications = [
   {
@@ -40,12 +43,26 @@ const mockNotifications = [
   },
 ]
 
-const mainNavItems = [
+// EMPLOYEE MODE NAVIGATION
+const employeeNavItems = [
   { id: "dashboard", label: "Dashboard", href: "/dashboard", icon: Home },
-  { id: "create", label: "Create", href: "/dashboard/assessments/create", icon: Plus, hasDropdown: true },
-  { id: "assessments", label: "Assessments", href: "/dashboard/assessments", icon: FileText, badge: 12 },
-  { id: "candidates", label: "Candidates", href: "/dashboard/candidates", icon: Users, badge: 47 },
-  { id: "analytics", label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { id: "employees", label: "Employees", href: "/dashboard/employees", icon: Users, badge: 47, description: "Manage your workforce" },
+  { id: "talent-search", label: "Talent Search", href: "/dashboard/talent-search", icon: Search, description: "Find skilled employees" },
+  { id: "assessments", label: "Assessments", href: "/dashboard/assessments", icon: FileText, badge: 12, description: "Skill assessments" },
+  { id: "learning-paths", label: "Learning Paths", href: "/dashboard/learning-paths", icon: GraduationCap, description: "Employee development" },
+  { id: "projects", label: "Projects", href: "/dashboard/projects", icon: Briefcase, description: "Assign talent to projects" },
+  { id: "analytics", label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, description: "Capability insights" },
+]
+
+// HIRING MODE NAVIGATION
+const hiringNavItems = [
+  { id: "dashboard", label: "Dashboard", href: "/dashboard", icon: Home },
+  { id: "candidates", label: "Candidates", href: "/dashboard/candidates", icon: Users, badge: 247, description: "Applicant pool" },
+  { id: "positions", label: "Positions", href: "/dashboard/positions", icon: Target, badge: 12, description: "Open job positions" },
+  { id: "assessments", label: "Assessments", href: "/dashboard/assessments", icon: FileText, badge: 12, description: "Screening tests" },
+  { id: "pipeline", label: "Pipeline", href: "/dashboard/pipeline", icon: TrendingUp, description: "Hiring funnel" },
+  { id: "interviews", label: "Interviews", href: "/dashboard/interviews", icon: Calendar, description: "Schedule & track" },
+  { id: "analytics", label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, description: "Hiring metrics" },
 ]
 
 const moreNavItems = [
@@ -62,10 +79,14 @@ interface UnifiedTopBarProps {
 export function UnifiedTopBar({ onCommandPaletteOpen }: UnifiedTopBarProps) {
   const { user } = useAuthStore()
   const { unreadCount } = useNotificationStore()
+  const { mode } = useModeStore()
   const pathname = usePathname()
   const [searchQuery, setSearchQuery] = useState("")
 
   const unreadNotifications = mockNotifications.filter((n) => !n.read)
+
+  // Select nav items based on mode - this will update reactively when mode changes
+  const mainNavItems = mode === 'employees' ? employeeNavItems : hiringNavItems
 
   const isActive = (href: string) => {
     if (href === "/dashboard") {
@@ -79,107 +100,99 @@ export function UnifiedTopBar({ onCommandPaletteOpen }: UnifiedTopBarProps) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="sticky top-0 z-[100] w-full h-16 bg-white/95 backdrop-blur-xl border-b border-mint-100/30 shadow-[0_1px_3px_rgba(201,244,212,0.1)]"
+      className="sticky top-0 z-[100] w-full h-20 bg-white/95 backdrop-blur-xl border-b border-mint-100/30 shadow-[0_1px_3px_rgba(201,244,212,0.1)]"
     >
       <div className="max-w-[1600px] mx-auto px-6 h-full">
-        <div className="flex items-center justify-between h-full">
-          {/* Left Section: Logo + Navigation */}
-          <div className="flex items-center space-x-8">
+        <div className="flex items-center justify-between h-full gap-4">
+          {/* Left Section: Logo */}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            {/* Mobile Menu Button */}
+            <MobileNav />
+            
             {/* Logo */}
-            <Link href="/dashboard" className="flex items-center space-x-2 group">
-              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-mint-100 to-mint-300 flex items-center justify-center border-2 border-mint-200">
-                <span className="text-text-primary font-bold text-xs">AI</span>
+            <Link href="/dashboard" className="flex items-center gap-3 group">
+              <div className="w-11 h-11 bg-gradient-to-br from-mint-500 to-green-500 rounded-xl flex items-center justify-center shadow-lg shadow-mint-500/30">
+                <span className="text-white font-black text-xl">AI</span>
               </div>
-              <span className="font-bold text-lg text-text-primary">AssessAI</span>
+              <span className="text-2xl font-black text-gray-900 hidden sm:block">
+                AssessAI
+              </span>
             </Link>
+          </div>
 
-            {/* Navigation Items */}
-            <nav className="hidden md:flex items-center space-x-1">
+          {/* Center Section: Navigation Items */}
+          <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center max-w-5xl mx-4" key={mode}>
               {mainNavItems.map((item) => {
                 const Icon = item.icon
                 const active = isActive(item.href)
 
-                if (item.hasDropdown) {
-                  return (
-                    <DropdownMenu key={item.id}>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className={cn(
-                            "h-10 px-4 rounded-lg text-sm font-medium transition-all",
-                            active
-                              ? "text-text-primary font-semibold bg-mint-50"
-                              : "text-text-subtle hover:text-text-primary hover:bg-mint-50/50"
-                          )}
-                        >
-                          <Icon className="h-4 w-4 mr-2" />
-                          {item.label}
-                          <ChevronDown className="h-4 w-4 ml-1" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="bg-white/95 backdrop-blur-xl border-mint-100 rounded-xl shadow-[0_8px_32px_rgba(201,244,212,0.2)]">
-                        <DropdownMenuItem asChild className="text-text-secondary hover:text-text-primary hover:bg-mint-50">
-                          <Link href="/dashboard/assessments/create">New Assessment</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild className="text-text-secondary hover:text-text-primary hover:bg-mint-50">
-                          <Link href="/dashboard/candidates/add">Add Candidate</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild className="text-text-secondary hover:text-text-primary hover:bg-mint-50">
-                          <Link href="/dashboard/reports">Generate Report</Link>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )
-                }
-
                 return (
-                  <Link key={item.id} href={item.href}>
+                  <Link key={`${mode}-${item.id}`} href={item.href}>
                     <motion.div
                       whileHover={{ y: -1 }}
                       className={cn(
-                        "relative h-10 px-4 rounded-lg flex items-center space-x-2 text-sm font-medium transition-all",
+                        "relative group px-4 py-2.5 rounded-xl flex items-center gap-2.5 text-sm font-semibold transition-all duration-200 whitespace-nowrap h-10",
                         active
-                          ? "text-text-primary font-semibold"
+                          ? mode === 'employees'
+                            ? "text-mint-600 bg-mint-50 shadow-sm"
+                            : "text-blue-600 bg-blue-50 shadow-sm"
                           : "text-text-subtle hover:text-text-primary hover:bg-mint-50/50"
                       )}
                     >
-                      <Icon className="h-4 w-4" />
-                      <span>{item.label}</span>
+                      <Icon className="w-[18px] h-[18px] flex-shrink-0" />
+                      <span className="font-semibold">{item.label}</span>
                       {item.badge && (
-                        <Badge className="ml-1 px-1.5 py-0.5 text-xs font-semibold bg-mint-200 text-text-primary rounded-full">
+                        <span className={cn(
+                          "px-2 py-0.5 rounded-full text-xs font-bold min-w-[24px] text-center flex-shrink-0",
+                          active
+                            ? mode === 'employees'
+                              ? "bg-mint-500 text-white"
+                              : "bg-blue-500 text-white"
+                            : "bg-gray-200 text-gray-700"
+                        )}>
                           {item.badge}
-                        </Badge>
+                        </span>
                       )}
                       {active && (
                         <motion.div
                           layoutId="activeIndicator"
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-mint-200 rounded-full"
+                          className={cn(
+                            "absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full",
+                            mode === 'employees' ? "bg-mint-500" : "bg-blue-500"
+                          )}
                           initial={false}
                           transition={{ type: "spring", stiffness: 500, damping: 30 }}
                         />
+                      )}
+                      {/* Tooltip */}
+                      {item.description && (
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                          {item.description}
+                          <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+                        </div>
                       )}
                     </motion.div>
                   </Link>
                 )
               })}
 
-              {/* More Menu */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className={cn(
-                      "h-10 px-4 rounded-lg text-sm font-medium transition-all",
-                      moreNavItems.some((item) => isActive(item.href))
-                        ? "text-text-primary font-semibold bg-mint-50"
-                        : "text-text-subtle hover:text-text-primary hover:bg-mint-50/50"
-                    )}
-                  >
-                    <MoreHorizontal className="h-4 w-4 mr-2" />
-                    More
-                    <ChevronDown className="h-4 w-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
+            {/* More Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "h-10 px-4 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2.5",
+                    moreNavItems.some((item) => isActive(item.href))
+                      ? "text-text-primary bg-mint-50 shadow-sm"
+                      : "text-text-subtle hover:text-text-primary hover:bg-mint-50/50"
+                  )}
+                >
+                  <MoreHorizontal className="h-[18px] w-[18px] flex-shrink-0" />
+                  <span className="font-semibold">More</span>
+                  <ChevronDown className="h-4 w-4 flex-shrink-0" />
+                </Button>
+              </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="bg-white/95 backdrop-blur-xl border-mint-100 rounded-xl shadow-[0_8px_32px_rgba(201,244,212,0.2)]">
                   {moreNavItems.map((item) => (
                     <DropdownMenuItem
@@ -195,14 +208,13 @@ export function UnifiedTopBar({ onCommandPaletteOpen }: UnifiedTopBarProps) {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-            </nav>
-          </div>
+          </nav>
 
           {/* Right Section: Search + Actions */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-3 flex-shrink-0">
             {/* Search */}
-            <div className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-subtle" />
+            <div className="relative hidden lg:block">
+              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-subtle" />
               <Input
                 type="search"
                 placeholder="Search... Cmd+K"
@@ -212,6 +224,9 @@ export function UnifiedTopBar({ onCommandPaletteOpen }: UnifiedTopBarProps) {
                 className="pl-10 pr-4 w-64 bg-mint-50/60 border-mint-100/40 rounded-lg focus:border-mint-200 focus:ring-2 focus:ring-mint-200/20 focus:bg-white text-text-primary placeholder:text-text-subtle h-10 text-sm"
               />
             </div>
+
+            {/* Mode Indicator */}
+            <ModeIndicator />
 
             {/* Quick Create */}
             <Button

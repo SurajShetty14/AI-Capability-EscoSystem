@@ -19,6 +19,8 @@ import { useAuthStore } from "@/store/auth-store"
 import { useNotificationStore } from "@/store/notification-store"
 import { motion } from "framer-motion"
 import { QuickActionsMenu } from "./QuickActionsMenu"
+import ModeIndicator from "./ModeIndicator"
+import { cn } from "@/lib/utils"
 
 const mockNotifications = [
   {
@@ -56,26 +58,28 @@ export function FloatingTopBar({ onCommandPaletteOpen }: FloatingTopBarProps) {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-48px)] max-w-[1600px] h-18"
+        className="fixed top-4 left-6 right-6 z-[100] max-w-[1600px] mx-auto"
       >
         <div className="relative bg-white/80 backdrop-blur-2xl border border-mint-100/30 rounded-2xl shadow-[0_8px_32px_rgba(128,239,192,0.15)] px-6 py-4">
-          <div className="flex items-center justify-between h-full">
+          <div className="flex items-center justify-between h-full gap-4">
             {/* Left Section */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4 flex-shrink-0">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => onCommandPaletteOpen?.()}
-                className="h-9 w-9 text-text-subtle hover:text-text-primary hover:bg-mint-50 rounded-lg"
+                className="h-10 w-10 text-text-subtle hover:text-text-primary hover:bg-mint-50 rounded-lg"
                 aria-label="Open menu"
               >
                 <Menu className="h-5 w-5" />
               </Button>
-              <Link href="/dashboard" className="flex items-center space-x-2 group">
-                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-mint-100 to-mint-300 flex items-center justify-center border-2 border-mint-200">
-                  <span className="text-text-primary font-bold text-sm">AI</span>
+              <Link href="/dashboard" className="flex items-center gap-3 group">
+                <div className="w-11 h-11 bg-gradient-to-br from-mint-500 to-green-500 rounded-xl flex items-center justify-center shadow-lg shadow-mint-500/30">
+                  <span className="text-white font-black text-xl">AI</span>
                 </div>
-                <span className="font-bold text-lg text-text-primary">AssessAI</span>
+                <span className="text-2xl font-black text-gray-900 hidden sm:block">
+                  AssessAI
+                </span>
               </Link>
             </div>
 
@@ -95,7 +99,10 @@ export function FloatingTopBar({ onCommandPaletteOpen }: FloatingTopBarProps) {
             </div>
 
             {/* Right Section - Actions */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-3 flex-shrink-0">
+              {/* Mode Indicator */}
+              <ModeIndicator />
+              
               {/* Quick Create */}
               <QuickActionsMenu />
 
@@ -211,6 +218,4 @@ export function FloatingTopBar({ onCommandPaletteOpen }: FloatingTopBarProps) {
     </>
   )
 }
-
-import { cn } from "@/lib/utils"
 
