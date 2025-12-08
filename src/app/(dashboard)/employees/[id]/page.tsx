@@ -43,7 +43,17 @@ import {
   Lightbulb,
   Rocket,
   Sparkles,
-  Users
+  Users,
+  Eye,
+  RefreshCw,
+  Filter,
+  ArrowDownRight,
+  Minus,
+  Play,
+  Pause,
+  Lock,
+  Unlock,
+  Book
 } from 'lucide-react';
 import {
   RadarChart,
@@ -61,10 +71,20 @@ import {
   AreaChart,
   Area,
   BarChart,
-  Bar
+  Bar,
+  PieChart,
+  Pie,
+  Cell
 } from 'recharts';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function EmployeeProfilePage({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'assessments' | 'learning' | 'projects'>('overview');
@@ -1660,12 +1680,1002 @@ function LearningRecommendations() {
 // 5. ASSESSMENTS TAB
 // ============================================================================
 
+// ============================================================================
+// 4. ASSESSMENTS TAB
+// ============================================================================
+
 function AssessmentsTab() {
+  const [filterBy, setFilterBy] = useState('all');
+  const [sortBy, setSortBy] = useState('recent');
+  const [expandedAssessment, setExpandedAssessment] = useState<string | null>(null);
+  
   return (
-    <div className="bg-white rounded-3xl p-8 border-2 border-gray-200 shadow-xl">
-      <h2 className="text-2xl font-black text-gray-900 mb-6">Assessments</h2>
-      <p className="text-gray-600">Assessment history coming soon...</p>
+    <div className="space-y-6">
+      {/* Page Header */}
+      <AssessmentsHeader />
+      
+      {/* Stats Overview Cards */}
+      <AssessmentStatsCards />
+      
+      {/* Performance Timeline Chart */}
+      <PerformanceTimelineChart />
+      
+      {/* Filter & Sort Bar */}
+      <FilterSortBar 
+        filterBy={filterBy}
+        setFilterBy={setFilterBy}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
+      
+      {/* Main Content Area */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Left: Assessment List (2/3) */}
+        <div className="lg:col-span-2 space-y-6">
+          <AssessmentsList 
+            filterBy={filterBy}
+            sortBy={sortBy}
+            expandedAssessment={expandedAssessment}
+            setExpandedAssessment={setExpandedAssessment}
+          />
+        </div>
+        
+        {/* Right: Insights Sidebar (1/3) */}
+        <div className="space-y-6">
+          <ScoreDistributionCard />
+          <StrengthsWeaknessesCard />
+          <UpcomingRetakesCard />
+          <ImprovementTipsCard />
+        </div>
+      </div>
     </div>
+  );
+}
+
+// ============================================================================
+// ASSESSMENTS HEADER
+// ============================================================================
+
+function AssessmentsHeader() {
+  return (
+    <div className="flex items-center justify-between">
+      <div>
+        <h2 className="text-3xl font-black text-gray-900 mb-2 flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
+            <FileText className="w-6 h-6 text-white" />
+          </div>
+          Assessment History
+        </h2>
+        <p className="text-gray-600 font-semibold">
+          Complete record of all assessments taken, scores, and performance trends
+        </p>
+      </div>
+      
+      <div className="flex gap-3">
+        <button className="px-4 py-2 bg-white hover:bg-gray-50 rounded-xl font-semibold text-gray-700 border-2 border-gray-200 transition-all flex items-center gap-2">
+          <Download className="w-4 h-4" />
+          Export Report
+        </button>
+        <button className="px-4 py-2 bg-gradient-to-r from-mint-500 to-green-500 hover:from-mint-600 hover:to-green-600 text-white rounded-xl font-semibold shadow-lg transition-all flex items-center gap-2">
+          <Play className="w-4 h-4" />
+          Assign Assessment
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// ASSESSMENT STATS CARDS
+// ============================================================================
+
+function AssessmentStatsCards() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      {/* Total Assessments */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0 }}
+        className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-6 text-white shadow-xl shadow-blue-500/30 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <FileText className="w-8 h-8 mb-3 relative z-10" />
+        <div className="text-4xl font-black mb-1 relative z-10">12</div>
+        <div className="text-sm font-semibold opacity-90 relative z-10">Total Assessments</div>
+        <div className="text-xs mt-2 opacity-75 relative z-10">+3 this year</div>
+      </motion.div>
+      
+      {/* Average Score */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="bg-gradient-to-br from-green-500 to-green-600 rounded-3xl p-6 text-white shadow-xl shadow-green-500/30 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <Award className="w-8 h-8 mb-3 relative z-10" />
+        <div className="text-4xl font-black mb-1 relative z-10">89%</div>
+        <div className="text-sm font-semibold opacity-90 relative z-10">Average Score</div>
+        <div className="text-xs mt-2 opacity-75 relative z-10 flex items-center gap-1">
+          <TrendingUp className="w-3 h-3" />
+          +5.2% from last quarter
+        </div>
+      </motion.div>
+      
+      {/* Pass Rate */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl shadow-purple-500/30 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <CheckCircle2 className="w-8 h-8 mb-3 relative z-10" />
+        <div className="text-4xl font-black mb-1 relative z-10">100%</div>
+        <div className="text-sm font-semibold opacity-90 relative z-10">Pass Rate</div>
+        <div className="text-xs mt-2 opacity-75 relative z-10">12/12 passed</div>
+      </motion.div>
+      
+      {/* Avg Improvement */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-3xl p-6 text-white shadow-xl shadow-amber-500/30 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <TrendingUp className="w-8 h-8 mb-3 relative z-10" />
+        <div className="text-4xl font-black mb-1 relative z-10">+12%</div>
+        <div className="text-sm font-semibold opacity-90 relative z-10">Avg Improvement</div>
+        <div className="text-xs mt-2 opacity-75 relative z-10">Per retake</div>
+      </motion.div>
+      
+      {/* Perfect Scores */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="bg-gradient-to-br from-rose-500 to-rose-600 rounded-3xl p-6 text-white shadow-xl shadow-rose-500/30 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <Trophy className="w-8 h-8 mb-3 relative z-10" />
+        <div className="text-4xl font-black mb-1 relative z-10">3</div>
+        <div className="text-sm font-semibold opacity-90 relative z-10">Perfect Scores</div>
+        <div className="text-xs mt-2 opacity-75 relative z-10">100% achievements</div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ============================================================================
+// PERFORMANCE TIMELINE CHART
+// ============================================================================
+
+function PerformanceTimelineChart() {
+  const data = [
+    { date: 'Jan 15', score: 78, assessment: 'React Basics' },
+    { date: 'Feb 10', score: 82, assessment: 'JavaScript Advanced' },
+    { date: 'Mar 5', score: 85, assessment: 'TypeScript' },
+    { date: 'Apr 20', score: 88, assessment: 'Node.js' },
+    { date: 'May 12', score: 91, assessment: 'System Design' },
+    { date: 'Jun 8', score: 89, assessment: 'AWS Fundamentals' },
+    { date: 'Jul 25', score: 93, assessment: 'React Advanced' },
+    { date: 'Aug 15', score: 95, assessment: 'Full Stack' },
+  ];
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-8 border-2 border-gray-200 shadow-xl"
+    >
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+          <BarChart3 className="w-7 h-7 text-blue-600" />
+          Performance Timeline
+        </h3>
+        <div className="flex gap-2">
+          <Select defaultValue="all">
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Time</SelectItem>
+              <SelectItem value="year">Last Year</SelectItem>
+              <SelectItem value="6months">Last 6 Months</SelectItem>
+              <SelectItem value="3months">Last 3 Months</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={data}>
+          <defs>
+            <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
+              <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+          <XAxis 
+            dataKey="date" 
+            tick={{ fill: '#6B7280', fontSize: 12, fontWeight: 600 }} 
+          />
+          <YAxis 
+            tick={{ fill: '#6B7280', fontSize: 12 }} 
+            domain={[70, 100]}
+          />
+          <Tooltip 
+            contentStyle={{ 
+              background: 'white', 
+              border: '2px solid #E5E7EB', 
+              borderRadius: '12px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+            }}
+            content={({ active, payload }: any) => {
+              if (active && payload && payload.length) {
+                return (
+                  <div className="bg-white border-2 border-gray-200 rounded-xl p-3 shadow-xl">
+                    <p className="font-bold text-gray-900">{payload[0].payload.assessment}</p>
+                    <p className="text-sm text-gray-600">{payload[0].payload.date}</p>
+                    <p className="text-2xl font-black text-green-600 mt-1">
+                      {payload[0].value}%
+                    </p>
+                  </div>
+                );
+              }
+              return null;
+            }}
+          />
+          <Line 
+            type="monotone" 
+            dataKey="score" 
+            stroke="#10B981" 
+            strokeWidth={3}
+            dot={{ fill: '#10B981', r: 6 }}
+            activeDot={{ r: 8 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+      
+      {/* Summary Stats Below Chart */}
+      <div className="grid grid-cols-4 gap-4 mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl">
+        <div className="text-center">
+          <div className="text-2xl font-black text-gray-900">+17%</div>
+          <div className="text-xs text-gray-600 font-semibold">Total Growth</div>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-black text-green-600">8/8</div>
+          <div className="text-xs text-gray-600 font-semibold">Improving Trend</div>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-black text-blue-600">95%</div>
+          <div className="text-xs text-gray-600 font-semibold">Highest Score</div>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-black text-purple-600">3</div>
+          <div className="text-xs text-gray-600 font-semibold">Perfect Scores</div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// FILTER & SORT BAR
+// ============================================================================
+
+function FilterSortBar({ filterBy, setFilterBy, sortBy, setSortBy }: any) {
+  return (
+    <div className="bg-white rounded-2xl p-4 border-2 border-gray-200 shadow-lg flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Filter className="w-5 h-5 text-gray-600" />
+          <span className="font-semibold text-gray-700">Filter:</span>
+        </div>
+        
+        <div className="flex gap-2">
+          <button
+            onClick={() => setFilterBy('all')}
+            className={cn(
+              "px-4 py-2 rounded-lg font-semibold text-sm transition-all",
+              filterBy === 'all'
+                ? "bg-mint-500 text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            )}
+          >
+            All (12)
+          </button>
+          <button
+            onClick={() => setFilterBy('passed')}
+            className={cn(
+              "px-4 py-2 rounded-lg font-semibold text-sm transition-all",
+              filterBy === 'passed'
+                ? "bg-green-500 text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            )}
+          >
+            Passed (12)
+          </button>
+          <button
+            onClick={() => setFilterBy('retaken')}
+            className={cn(
+              "px-4 py-2 rounded-lg font-semibold text-sm transition-all",
+              filterBy === 'retaken'
+                ? "bg-blue-500 text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            )}
+          >
+            Retaken (4)
+          </button>
+          <button
+            onClick={() => setFilterBy('perfect')}
+            className={cn(
+              "px-4 py-2 rounded-lg font-semibold text-sm transition-all",
+              filterBy === 'perfect'
+                ? "bg-amber-500 text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            )}
+          >
+            Perfect (3)
+          </button>
+        </div>
+      </div>
+      
+      <Select value={sortBy} onValueChange={setSortBy}>
+        <SelectTrigger className="w-48">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="recent">Most Recent</SelectItem>
+          <SelectItem value="oldest">Oldest First</SelectItem>
+          <SelectItem value="highest">Highest Score</SelectItem>
+          <SelectItem value="lowest">Lowest Score</SelectItem>
+          <SelectItem value="improvement">Best Improvement</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+// ============================================================================
+// ASSESSMENTS LIST
+// ============================================================================
+
+function AssessmentsList({ filterBy, sortBy, expandedAssessment, setExpandedAssessment }: any) {
+  const assessments = [
+    {
+      id: '1',
+      title: 'Full Stack Developer Assessment',
+      date: 'Aug 15, 2024',
+      score: 95,
+      previousScore: 82,
+      improvement: 13,
+      duration: '2h 30m',
+      status: 'passed',
+      attempt: 2,
+      isPerfect: false,
+      breakdown: {
+        mcq: { score: 92, total: 10, correct: 9 },
+        coding: { score: 96, total: 5, passed: 5 },
+        subjective: { score: 97, total: 3 }
+      },
+      skills: ['React', 'Node.js', 'TypeScript', 'MongoDB'],
+      nextRetakeDate: null,
+      canRetake: false
+    },
+    {
+      id: '2',
+      title: 'React Advanced Patterns',
+      date: 'Jul 25, 2024',
+      score: 93,
+      previousScore: null,
+      improvement: null,
+      duration: '1h 45m',
+      status: 'passed',
+      attempt: 1,
+      isPerfect: false,
+      breakdown: {
+        mcq: { score: 90, total: 15, correct: 13 },
+        coding: { score: 95, total: 5, passed: 5 }
+      },
+      skills: ['React', 'Hooks', 'Context API'],
+      nextRetakeDate: 'Sep 25, 2024',
+      canRetake: true
+    },
+    {
+      id: '3',
+      title: 'AWS Fundamentals',
+      date: 'Jun 8, 2024',
+      score: 89,
+      previousScore: null,
+      improvement: null,
+      duration: '2h 10m',
+      status: 'passed',
+      attempt: 1,
+      isPerfect: false,
+      breakdown: {
+        mcq: { score: 88, total: 20, correct: 17 },
+        coding: { score: 90, total: 3, passed: 3 }
+      },
+      skills: ['AWS', 'EC2', 'S3', 'Lambda'],
+      nextRetakeDate: 'Aug 8, 2024',
+      canRetake: true
+    },
+    {
+      id: '4',
+      title: 'System Design Fundamentals',
+      date: 'May 12, 2024',
+      score: 91,
+      previousScore: null,
+      improvement: null,
+      duration: '3h 00m',
+      status: 'passed',
+      attempt: 1,
+      isPerfect: false,
+      breakdown: {
+        subjective: { score: 91, total: 5 }
+      },
+      skills: ['System Design', 'Architecture', 'Scalability'],
+      nextRetakeDate: null,
+      canRetake: true
+    },
+    {
+      id: '5',
+      title: 'Node.js Backend Development',
+      date: 'Apr 20, 2024',
+      score: 88,
+      previousScore: 75,
+      improvement: 13,
+      duration: '2h 15m',
+      status: 'passed',
+      attempt: 2,
+      isPerfect: false,
+      breakdown: {
+        mcq: { score: 85, total: 12, correct: 10 },
+        coding: { score: 90, total: 4, passed: 4 }
+      },
+      skills: ['Node.js', 'Express', 'REST API'],
+      nextRetakeDate: null,
+      canRetake: true
+    },
+    {
+      id: '6',
+      title: 'TypeScript Advanced',
+      date: 'Mar 5, 2024',
+      score: 100,
+      previousScore: null,
+      improvement: null,
+      duration: '1h 30m',
+      status: 'passed',
+      attempt: 1,
+      isPerfect: true,
+      breakdown: {
+        mcq: { score: 100, total: 15, correct: 15 },
+        coding: { score: 100, total: 5, passed: 5 }
+      },
+      skills: ['TypeScript', 'Generics', 'Advanced Types'],
+      nextRetakeDate: null,
+      canRetake: false
+    },
+  ];
+  
+  return (
+    <div className="space-y-4">
+      {assessments.map((assessment, index) => (
+        <AssessmentCard
+          key={assessment.id}
+          assessment={assessment}
+          index={index}
+          isExpanded={expandedAssessment === assessment.id}
+          onToggleExpand={() => 
+            setExpandedAssessment(
+              expandedAssessment === assessment.id ? null : assessment.id
+            )
+          }
+        />
+      ))}
+    </div>
+  );
+}
+
+// ============================================================================
+// ASSESSMENT CARD COMPONENT
+// ============================================================================
+
+function AssessmentCard({ assessment, index, isExpanded, onToggleExpand }: any) {
+  const getScoreColor = (score: number) => {
+    if (score >= 90) return 'text-green-600';
+    if (score >= 75) return 'text-blue-600';
+    if (score >= 60) return 'text-amber-600';
+    return 'text-red-600';
+  };
+  
+  const getScoreBgColor = (score: number) => {
+    if (score >= 90) return 'from-green-500 to-green-600';
+    if (score >= 75) return 'from-blue-500 to-blue-600';
+    if (score >= 60) return 'from-amber-500 to-amber-600';
+    return 'from-red-500 to-red-600';
+  };
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.05 }}
+      className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg overflow-hidden hover:shadow-xl transition-all"
+    >
+      {/* Main Card Content */}
+      <div className="p-6">
+        <div className="flex items-start gap-6">
+          {/* Score Circle */}
+          <div className={cn(
+            "w-24 h-24 rounded-2xl bg-gradient-to-br flex flex-col items-center justify-center text-white shadow-xl flex-shrink-0",
+            getScoreBgColor(assessment.score)
+          )}>
+            <div className="text-3xl font-black">{assessment.score}</div>
+            <div className="text-xs font-semibold opacity-90">/ 100</div>
+          </div>
+          
+          {/* Assessment Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex-1">
+                <h3 className="text-xl font-black text-gray-900 mb-1 flex items-center gap-2">
+                  {assessment.title}
+                  {assessment.isPerfect && (
+                    <Trophy className="w-5 h-5 text-amber-500" />
+                  )}
+                </h3>
+                <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-4 h-4" />
+                    {assessment.date}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    {assessment.duration}
+                  </div>
+                  <div className="flex items-center gap-1 font-semibold">
+                    <RefreshCw className="w-4 h-4" />
+                    Attempt {assessment.attempt}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Status Badge */}
+              <div className="flex items-center gap-2">
+                {assessment.improvement && (
+                  <div className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold flex items-center gap-1">
+                    <TrendingUp className="w-4 h-4" />
+                    +{assessment.improvement}%
+                  </div>
+                )}
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-4 h-4" />
+                  Passed
+                </span>
+              </div>
+            </div>
+            
+            {/* Skills Tags */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {assessment.skills.map((skill: string) => (
+                <span 
+                  key={skill}
+                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-semibold"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+            
+            {/* Quick Stats */}
+            <div className="flex items-center gap-6">
+              <div className="text-sm">
+                <span className="text-gray-600 font-semibold">MCQ:</span>
+                <span className={cn("ml-2 font-black", getScoreColor(assessment.breakdown.mcq?.score || 0))}>
+                  {assessment.breakdown.mcq?.score}%
+                </span>
+              </div>
+              {assessment.breakdown.coding && (
+                <div className="text-sm">
+                  <span className="text-gray-600 font-semibold">Coding:</span>
+                  <span className={cn("ml-2 font-black", getScoreColor(assessment.breakdown.coding.score))}>
+                    {assessment.breakdown.coding.score}%
+                  </span>
+                </div>
+              )}
+              {assessment.breakdown.subjective && (
+                <div className="text-sm">
+                  <span className="text-gray-600 font-semibold">Subjective:</span>
+                  <span className={cn("ml-2 font-black", getScoreColor(assessment.breakdown.subjective.score))}>
+                    {assessment.breakdown.subjective.score}%
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Expand Button */}
+          <button
+            onClick={onToggleExpand}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <ChevronDown className={cn(
+              "w-6 h-6 text-gray-600 transition-transform",
+              isExpanded && "rotate-180"
+            )} />
+          </button>
+        </div>
+        
+        {/* Action Buttons */}
+        <div className="flex gap-2 mt-4">
+          <button className="px-4 py-2 bg-mint-500 hover:bg-mint-600 text-white rounded-xl font-semibold text-sm transition-all flex items-center gap-2">
+            <Eye className="w-4 h-4" />
+            View Details
+          </button>
+          <button className="px-4 py-2 bg-white hover:bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold text-sm text-gray-700 transition-all flex items-center gap-2">
+            <Download className="w-4 h-4" />
+            Report
+          </button>
+          {assessment.canRetake && (
+            <button 
+              className={cn(
+                "px-4 py-2 rounded-xl font-semibold text-sm transition-all flex items-center gap-2",
+                assessment.nextRetakeDate
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600 text-white"
+              )}
+              disabled={!!assessment.nextRetakeDate}
+            >
+              {assessment.nextRetakeDate ? (
+                <>
+                  <Lock className="w-4 h-4" />
+                  Cooldown until {assessment.nextRetakeDate}
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="w-4 h-4" />
+                  Retake
+                </>
+              )}
+            </button>
+          )}
+        </div>
+      </div>
+      
+      {/* Expanded Section */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="border-t-2 border-gray-200 bg-gray-50"
+          >
+            <div className="p-6">
+              <AssessmentDetailedBreakdown assessment={assessment} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// ASSESSMENT DETAILED BREAKDOWN
+// ============================================================================
+
+function AssessmentDetailedBreakdown({ assessment }: any) {
+  return (
+    <div className="space-y-6">
+      <h4 className="text-lg font-black text-gray-900 mb-4">Detailed Breakdown</h4>
+      
+      {/* MCQ Breakdown */}
+      {assessment.breakdown.mcq && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h5 className="font-bold text-gray-900 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-blue-600" />
+              Multiple Choice Questions
+            </h5>
+            <span className="text-2xl font-black text-blue-600">
+              {assessment.breakdown.mcq.score}%
+            </span>
+          </div>
+          <div className="bg-white rounded-xl p-4 border-2 border-gray-200">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div className="text-xs text-gray-600 font-semibold mb-1">Total</div>
+                <div className="text-2xl font-black text-gray-900">
+                  {assessment.breakdown.mcq.total}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-600 font-semibold mb-1">Correct</div>
+                <div className="text-2xl font-black text-green-600">
+                  {assessment.breakdown.mcq.correct}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-600 font-semibold mb-1">Incorrect</div>
+                <div className="text-2xl font-black text-red-600">
+                  {assessment.breakdown.mcq.total - assessment.breakdown.mcq.correct}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Coding Breakdown */}
+      {assessment.breakdown.coding && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h5 className="font-bold text-gray-900 flex items-center gap-2">
+              <Code className="w-5 h-5 text-green-600" />
+              Coding Challenges
+            </h5>
+            <span className="text-2xl font-black text-green-600">
+              {assessment.breakdown.coding.score}%
+            </span>
+          </div>
+          <div className="bg-white rounded-xl p-4 border-2 border-gray-200">
+            <div className="grid grid-cols-2 gap-4 text-center">
+              <div>
+                <div className="text-xs text-gray-600 font-semibold mb-1">Total</div>
+                <div className="text-2xl font-black text-gray-900">
+                  {assessment.breakdown.coding.total}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-600 font-semibold mb-1">Passed</div>
+                <div className="text-2xl font-black text-green-600">
+                  {assessment.breakdown.coding.passed}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Subjective Breakdown */}
+      {assessment.breakdown.subjective && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h5 className="font-bold text-gray-900 flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-purple-600" />
+              Subjective Questions
+            </h5>
+            <span className="text-2xl font-black text-purple-600">
+              {assessment.breakdown.subjective.score}%
+            </span>
+          </div>
+          <div className="bg-white rounded-xl p-4 border-2 border-gray-200">
+            <div className="text-center">
+              <div className="text-xs text-gray-600 font-semibold mb-1">Total Questions</div>
+              <div className="text-2xl font-black text-gray-900">
+                {assessment.breakdown.subjective.total}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Previous Attempt Comparison */}
+      {assessment.previousScore && (
+        <div className="bg-gradient-to-r from-green-50 to-mint-50 rounded-xl p-4 border-2 border-green-200">
+          <h5 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-green-600" />
+            Improvement from Previous Attempt
+          </h5>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm text-gray-600 font-semibold">Previous Score</div>
+              <div className="text-3xl font-black text-gray-900">{assessment.previousScore}%</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-black text-green-600">→</div>
+              <div className="text-sm text-green-600 font-bold">+{assessment.improvement}%</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-600 font-semibold">Current Score</div>
+              <div className="text-3xl font-black text-green-600">{assessment.score}%</div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
+// SCORE DISTRIBUTION CARD
+// ============================================================================
+
+function ScoreDistributionCard() {
+  const data = [
+    { name: '90-100', value: 3, color: '#10B981' },
+    { name: '75-89', value: 7, color: '#3B82F6' },
+    { name: '60-74', value: 2, color: '#F59E0B' },
+    { name: '<60', value: 0, color: '#EF4444' },
+  ];
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-6 border-2 border-gray-200 shadow-xl"
+    >
+      <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+        <BarChart3 className="w-6 h-6 text-blue-600" />
+        Score Distribution
+      </h3>
+      
+      <ResponsiveContainer width="100%" height={200}>
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={({ name, value }) => `${name}: ${value}`}
+            outerRadius={80}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
+          <Tooltip />
+        </PieChart>
+      </ResponsiveContainer>
+      
+      <div className="mt-4 space-y-2">
+        {data.map((item) => (
+          <div key={item.name} className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+              <span className="font-semibold text-gray-700">{item.name}</span>
+            </div>
+            <span className="font-black text-gray-900">{item.value} assessments</span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// STRENGTHS & WEAKNESSES CARD
+// ============================================================================
+
+function StrengthsWeaknessesCard() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-6 border-2 border-gray-200 shadow-xl"
+    >
+      <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+        <Target className="w-6 h-6 text-purple-600" />
+        Strengths & Weaknesses
+      </h3>
+      
+      <div className="space-y-4">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-bold text-gray-900">Top Strengths</span>
+            <TrendingUp className="w-4 h-4 text-green-600" />
+          </div>
+          <div className="space-y-2">
+            {['React', 'TypeScript', 'Node.js'].map((skill) => (
+              <div key={skill} className="flex items-center justify-between p-2 bg-green-50 rounded-lg">
+                <span className="text-sm font-semibold text-gray-900">{skill}</span>
+                <span className="text-sm font-black text-green-600">95%+</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-bold text-gray-900">Areas to Improve</span>
+            <AlertCircle className="w-4 h-4 text-amber-600" />
+          </div>
+          <div className="space-y-2">
+            {['AWS', 'System Design'].map((skill) => (
+              <div key={skill} className="flex items-center justify-between p-2 bg-amber-50 rounded-lg">
+                <span className="text-sm font-semibold text-gray-900">{skill}</span>
+                <span className="text-sm font-black text-amber-600">75-85%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// UPCOMING RETAKES CARD
+// ============================================================================
+
+function UpcomingRetakesCard() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-3xl p-6 border-2 border-gray-200 shadow-xl"
+    >
+      <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+        <Clock className="w-6 h-6 text-blue-600" />
+        Upcoming Retakes
+      </h3>
+      
+      <div className="space-y-3">
+        <div className="p-3 bg-blue-50 rounded-xl border-2 border-blue-200">
+          <div className="font-bold text-gray-900 text-sm mb-1">React Advanced Patterns</div>
+          <div className="text-xs text-gray-600 flex items-center gap-1">
+            <Calendar className="w-3 h-3" />
+            Available Sep 25, 2024
+          </div>
+        </div>
+        <div className="p-3 bg-blue-50 rounded-xl border-2 border-blue-200">
+          <div className="font-bold text-gray-900 text-sm mb-1">AWS Fundamentals</div>
+          <div className="text-xs text-gray-600 flex items-center gap-1">
+            <Calendar className="w-3 h-3" />
+            Available Aug 8, 2024
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================================
+// IMPROVEMENT TIPS CARD
+// ============================================================================
+
+function ImprovementTipsCard() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-gradient-to-br from-mint-50 to-green-50 rounded-3xl p-6 border-2 border-mint-200 shadow-xl"
+    >
+      <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+        <Lightbulb className="w-6 h-6 text-amber-600" />
+        Improvement Tips
+      </h3>
+      
+      <div className="space-y-3">
+        <div className="p-3 bg-white rounded-xl border-2 border-gray-200">
+          <div className="flex items-start gap-2">
+            <Book className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <div className="font-bold text-gray-900 text-sm mb-1">Focus on System Design</div>
+              <div className="text-xs text-gray-600">Review scalability patterns and architecture principles</div>
+            </div>
+          </div>
+        </div>
+        <div className="p-3 bg-white rounded-xl border-2 border-gray-200">
+          <div className="flex items-start gap-2">
+            <Code className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <div className="font-bold text-gray-900 text-sm mb-1">Practice AWS Services</div>
+              <div className="text-xs text-gray-600">Hands-on labs for EC2, S3, and Lambda</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
