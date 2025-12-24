@@ -1,5 +1,5 @@
 "use client"
 
 // Re-export from (dashboard) route group
-export { default } from "@/app/(dashboard)/employees/[id]/page"
+export { default } from "@/app/(pages)/employees/[id]/page"
 
