@@ -10,7 +10,9 @@ export function convertToGlobalProfile(candidate: EnhancedCandidate, platformAvg
     assessmentType: assess.assessmentType as "assessment" | "dsa" | "cloud" | "ai",
     score: assess.score || 0,
     status: assess.status as "completed" | "in-progress" | "pending" | "failed",
-    completedAt: assess.completedAt,
+    completedAt: assess.completedAt instanceof Date 
+      ? assess.completedAt.toISOString()
+      : assess.completedAt,
     timeSpent: assess.timeSpent,
     rank: candidate.percentileRank,
     breakdown: {
@@ -78,10 +80,13 @@ export function convertToGlobalProfile(candidate: EnhancedCandidate, platformAvg
   
   candidate.assessments.forEach((assess) => {
     if (assess.appliedAt) {
+      const appliedAtStr = assess.appliedAt instanceof Date 
+        ? assess.appliedAt.toISOString() 
+        : assess.appliedAt
       timeline.push({
         id: `timeline-${assess.assessmentId}-invite`,
-        date: assess.appliedAt,
-        timestamp: assess.appliedAt,
+        date: appliedAtStr,
+        timestamp: appliedAtStr,
         type: "invitation-sent",
         title: "Invitation Sent",
         description: `Invited to ${assess.assessmentTitle}`,
@@ -95,10 +100,13 @@ export function convertToGlobalProfile(candidate: EnhancedCandidate, platformAvg
     }
     
     if (assess.status === "in-progress") {
+      const appliedAtStr = assess.appliedAt instanceof Date 
+        ? assess.appliedAt.toISOString() 
+        : (assess.appliedAt || new Date().toISOString())
       timeline.push({
         id: `timeline-${assess.assessmentId}-start`,
-        date: assess.appliedAt || new Date().toISOString(),
-        timestamp: assess.appliedAt || new Date().toISOString(),
+        date: appliedAtStr,
+        timestamp: appliedAtStr,
         type: "assessment-started",
         title: "Assessment Started",
         description: `Started ${assess.assessmentTitle}`,
@@ -110,10 +118,13 @@ export function convertToGlobalProfile(candidate: EnhancedCandidate, platformAvg
     }
     
     if (assess.completedAt) {
+      const completedAtStr = assess.completedAt instanceof Date 
+        ? assess.completedAt.toISOString()
+        : assess.completedAt
       timeline.push({
         id: `timeline-${assess.assessmentId}-complete`,
-        date: assess.completedAt,
-        timestamp: assess.completedAt,
+        date: completedAtStr,
+        timestamp: completedAtStr,
         type: "assessment-completed",
         title: "Assessment Completed",
         description: `Completed ${assess.assessmentTitle}`,
@@ -127,10 +138,13 @@ export function convertToGlobalProfile(candidate: EnhancedCandidate, platformAvg
   })
 
   // Add profile creation
+  const memberSinceStr = candidate.memberSince instanceof Date 
+    ? candidate.memberSince.toISOString() 
+    : candidate.memberSince
   timeline.push({
     id: `timeline-${candidate.id}-created`,
-    date: candidate.memberSince,
-    timestamp: candidate.memberSince,
+    date: memberSinceStr,
+    timestamp: memberSinceStr,
     type: "profile-created",
     title: "Profile Created",
     description: "Candidate joined platform",
@@ -221,7 +235,9 @@ export function convertToGlobalProfile(candidate: EnhancedCandidate, platformAvg
     email: candidate.email,
     phone: candidate.phone,
     avatar: undefined,
-    memberSince: candidate.memberSince,
+    memberSince: candidate.memberSince instanceof Date 
+      ? candidate.memberSince.toISOString() 
+      : candidate.memberSince,
     location: "New York, USA",
     timezone: "EST -05:00",
     status: candidate.overallScore >= 90 ? "top-talent" : candidate.status === "completed" ? "active" : candidate.status === "active" ? "in-pipeline" : "active",

@@ -137,21 +137,21 @@ export function ScheduleStep({ formData, updateField }: ScheduleStepProps) {
             <RadioOption
               value="immediate"
               selected={availabilityType}
-              onChange={handleAvailabilityTypeChange}
+              onChange={(value) => handleAvailabilityTypeChange(value as AvailabilityType)}
               label="Available Immediately (Default)"
               description="Candidates can start as soon as they receive invite"
             />
             <RadioOption
               value="scheduled"
               selected={availabilityType}
-              onChange={handleAvailabilityTypeChange}
+              onChange={(value) => handleAvailabilityTypeChange(value as AvailabilityType)}
               label="Schedule Specific Window"
               description="Set start and end dates/times"
             />
             <RadioOption
               value="custom"
               selected={availabilityType}
-              onChange={handleAvailabilityTypeChange}
+              onChange={(value) => handleAvailabilityTypeChange(value as AvailabilityType)}
               label="Custom Schedule Per Candidate"
               description="Set individual time slots (configure in next step)"
             />

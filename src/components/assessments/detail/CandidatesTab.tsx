@@ -89,7 +89,7 @@ export function CandidatesTab({ assessment }: CandidatesTabProps) {
       label: "Completed",
       count: mockCandidates.filter((c) => c.status === "completed").length,
     },
-    { id: "failed", label: "Failed", count: mockCandidates.filter((c) => c.status === "failed").length },
+    { id: "inactive", label: "Inactive", count: mockCandidates.filter((c) => c.status === "inactive").length },
   ]
 
   return (
@@ -257,7 +257,9 @@ function createMockProfile(
     name: candidate?.name || "Unknown",
     email: candidate?.email || "",
     phone: candidate?.phone,
-    memberSince: candidate?.memberSince || new Date().toISOString(),
+    memberSince: candidate?.memberSince instanceof Date 
+      ? candidate.memberSince.toISOString() 
+      : (candidate?.memberSince || new Date().toISOString()),
     location: "New York, USA",
     timezone: "EST -05:00",
     assessmentId: assessment.id,
@@ -273,19 +275,19 @@ function createMockProfile(
       mcq: {
         score: 18,
         total: 10,
-        percentage: assessmentData?.breakdown.mcq || 90,
+        percentage: assessmentData?.breakdown?.mcq || 90,
         time: 930,
       },
       coding: {
         score: 4,
         total: 5,
-        percentage: assessmentData?.breakdown.coding || 80,
+        percentage: assessmentData?.breakdown?.coding || 80,
         time: 6300,
       },
       subjective: {
         score: 2,
         total: 3,
-        percentage: assessmentData?.breakdown.subjective || 67,
+        percentage: assessmentData?.breakdown?.subjective || 67,
         time: 1980,
       },
     },
@@ -293,7 +295,9 @@ function createMockProfile(
     events: [
       {
         id: "e1",
-        timestamp: candidate?.assessments[0]?.appliedAt || new Date().toISOString(),
+        timestamp: candidate?.assessments[0]?.appliedAt instanceof Date
+          ? candidate.assessments[0].appliedAt.toISOString()
+          : (candidate?.assessments[0]?.appliedAt || new Date().toISOString()),
         type: "started",
         title: "Assessment Started",
         description: `${candidate?.name || "Candidate"} began the assessment`,
@@ -371,9 +375,15 @@ function createMockProfile(
           "Strong candidate for Mid-Level position. Would benefit from mentorship in performance tuning. Consider for roles with moderate complexity.",
       },
     },
-    invitedAt: candidate?.assessments[0]?.appliedAt,
-    startedAt: candidate?.assessments[0]?.appliedAt,
-    completedAt: candidate?.assessments[0]?.completedAt,
+    invitedAt: candidate?.assessments[0]?.appliedAt instanceof Date
+      ? candidate.assessments[0].appliedAt.toISOString()
+      : candidate?.assessments[0]?.appliedAt,
+    startedAt: candidate?.assessments[0]?.appliedAt instanceof Date
+      ? candidate.assessments[0].appliedAt.toISOString()
+      : candidate?.assessments[0]?.appliedAt,
+    completedAt: candidate?.assessments[0]?.completedAt instanceof Date
+      ? candidate.assessments[0].completedAt.toISOString()
+      : candidate?.assessments[0]?.completedAt,
   }
 }
 

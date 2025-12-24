@@ -58,7 +58,6 @@ export function SettingsTab({ assessment, onUpdate }: SettingsTabProps) {
                 backgroundColor: "#FFFFFF",
                 borderColor: "#C9F4D4",
                 color: "#1E5A3B",
-                focusRingColor: "#80EFC0",
               }}
             />
           </div>

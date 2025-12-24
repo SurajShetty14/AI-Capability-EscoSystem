@@ -108,7 +108,7 @@ export function Sidebar() {
         <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-1">
           {NAV_ITEMS.map((item) => {
             const Icon = iconMap[item.icon] || Home
-            const hasSubmenu = item.submenu && item.submenu.length > 0
+            const hasSubmenu = 'submenu' in item && item.submenu && item.submenu.length > 0
             const isItemActive = isActive(item.href)
             const isExpanded = expandedItems.includes(item.id)
 

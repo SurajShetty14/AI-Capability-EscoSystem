@@ -21,6 +21,20 @@ export function DateTimePicker({
   minDate,
   maxDate,
 }: DateTimePickerProps) {
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    })
+  }
+
+  const formatTime = (date: Date) => {
+    const hours = date.getHours().toString().padStart(2, "0")
+    const minutes = date.getMinutes().toString().padStart(2, "0")
+    return `${hours}:${minutes}`
+  }
+
   const [isOpen, setIsOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(value || null)
   const [selectedTime, setSelectedTime] = useState<string>(
@@ -46,20 +60,6 @@ export function DateTimePicker({
       return () => document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [isOpen])
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      month: "2-digit",
-      day: "2-digit",
-      year: "numeric",
-    })
-  }
-
-  const formatTime = (date: Date) => {
-    const hours = date.getHours().toString().padStart(2, "0")
-    const minutes = date.getMinutes().toString().padStart(2, "0")
-    return `${hours}:${minutes}`
-  }
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date)

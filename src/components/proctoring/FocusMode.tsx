@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowLeft, Flag, MessageCircle, X, CheckCircle2, TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { ArrowLeft, Flag, MessageCircle, X, CheckCircle2, TrendingUp, TrendingDown, Minus, AlertTriangle } from "lucide-react"
 
 interface FocusModeProps {
   candidate: {
