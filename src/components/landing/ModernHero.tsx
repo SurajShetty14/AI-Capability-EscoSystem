@@ -92,7 +92,7 @@ export function ModernHero() {
               size="lg"
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-2xl px-8 py-4 text-base font-semibold shadow-[0_0_60px_rgba(139,92,246,0.4)] hover:shadow-[0_0_80px_rgba(139,92,246,0.6)] hover:-translate-y-1 transition-all group"
             >
-              <Link href="#pricing" className="flex items-center space-x-2">
+              <Link href="/dashboard" className="flex items-center space-x-2">
                 <span>Start Free Trial</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -103,7 +103,7 @@ export function ModernHero() {
               variant="outline"
               className="bg-white/5 border-white/10 backdrop-blur-xl text-white hover:bg-white/10 rounded-2xl px-8 py-4"
             >
-              <Link href="#demo" className="flex items-center space-x-2">
+              <Link href="/dashboard" className="flex items-center space-x-2">
                 <span>↗</span>
                 <span>Watch 2-min demo</span>
               </Link>

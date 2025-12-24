@@ -520,7 +520,7 @@ function FilterSidebar({ filters, setFilters }: any) {
           <FilterSection title="Required Skills" icon={<Code className="w-5 h-5 text-blue-600" />}>
             <SkillsSelect 
               selected={filters.skills}
-              onChange={(skills) => setFilters({ ...filters, skills })}
+              onChange={(skills: string[]) => setFilters({ ...filters, skills })}
             />
           </FilterSection>
           
@@ -566,7 +566,7 @@ function FilterSidebar({ filters, setFilters }: any) {
           <FilterSection title="Location" icon={<MapPin className="w-5 h-5 text-red-600" />}>
             <LocationSelect
               selected={filters.location}
-              onChange={(locations) => setFilters({ ...filters, location: locations })}
+              onChange={(locations: string[]) => setFilters({ ...filters, location: locations })}
             />
           </FilterSection>
           
@@ -592,7 +592,7 @@ function FilterSidebar({ filters, setFilters }: any) {
           <FilterSection title="Department" icon={<Users className="w-5 h-5 text-mint-600" />}>
             <DepartmentSelect
               selected={filters.department}
-              onChange={(depts) => setFilters({ ...filters, department: depts })}
+              onChange={(depts: string[]) => setFilters({ ...filters, department: depts })}
             />
           </FilterSection>
         </div>

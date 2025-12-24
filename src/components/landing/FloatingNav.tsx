@@ -105,7 +105,7 @@ export function FloatingNav() {
           {/* Profile/User at bottom */}
           <div className="mt-[6.5rem] pt-6 border-t border-white/10 w-full">
             <div className="outline-none">
-              <Link href="/login" className="outline-none" aria-label="My Space">
+              <Link href="/dashboard" className="outline-none" aria-label="My Space">
                 <button
                   type="button"
                   className="flex items-center duration-200 ease-in-out transform origin-left transition-all text-gray-400 hover:text-white w-full"
@@ -254,7 +254,7 @@ function MobileMenu({
             asChild
             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl py-4 mt-8"
           >
-            <Link href="#pricing" onClick={onClose}>
+            <Link href="/dashboard" onClick={onClose}>
               Start Free Trial
             </Link>
           </Button>

@@ -22,8 +22,8 @@ const difficultyOptions = [
 
 export function DifficultyStep({ formData, updateField, competencyType }: DifficultyStepProps) {
   const handleDurationChange = (delta: number) => {
-    const newDuration = Math.max(15, Math.min(180, formData.duration + delta))
-    updateField('duration', newDuration)
+    const newDuration = Math.max(15, Math.min(180, formData.estimatedDuration + delta))
+    updateField('estimatedDuration', newDuration)
   }
 
   return (
@@ -77,15 +77,15 @@ export function DifficultyStep({ formData, updateField, competencyType }: Diffic
                 variant="outline"
                 size="icon"
                 onClick={() => handleDurationChange(-15)}
-                disabled={formData.duration <= 15}
+                disabled={formData.estimatedDuration <= 15}
                 className="border-mint-100 hover:bg-mint-50"
               >
                 <Minus className="h-4 w-4" />
               </Button>
               <Input
                 type="number"
-                value={formData.duration}
-                onChange={(e) => updateField('duration', parseInt(e.target.value) || 60)}
+                value={formData.estimatedDuration}
+                onChange={(e) => updateField('estimatedDuration', parseInt(e.target.value) || 60)}
                 min={15}
                 max={180}
                 className="text-center text-[18px] font-semibold border-2 border-mint-100 rounded-xl"
@@ -94,14 +94,14 @@ export function DifficultyStep({ formData, updateField, competencyType }: Diffic
                 variant="outline"
                 size="icon"
                 onClick={() => handleDurationChange(15)}
-                disabled={formData.duration >= 180}
+                disabled={formData.estimatedDuration >= 180}
                 className="border-mint-100 hover:bg-mint-50"
               >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
             <p className="text-[14px] text-text-subtle">
-              About {Math.floor(formData.duration / 10)} questions
+              About {Math.floor(formData.estimatedDuration / 10)} questions
             </p>
           </div>
         </div>

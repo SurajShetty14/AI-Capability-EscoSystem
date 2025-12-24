@@ -78,7 +78,7 @@ const mockAssessments: Assessment[] = [
   {
     id: "6",
     name: "DevOps Engineer Assessment",
-    status: "completed",
+    status: "archived",
     type: "template",
     questionCount: 28,
     candidateCount: 15,

@@ -114,7 +114,7 @@ export function Navigation() {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center space-x-4">
             <Link
-              href="/login"
+              href="/dashboard"
               className="text-gray-600 hover:text-gray-900 transition-colors"
             >
               Login
@@ -123,7 +123,7 @@ export function Navigation() {
               asChild
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
             >
-              <Link href="#pricing">Try Free</Link>
+              <Link href="/dashboard">Try Free</Link>
             </Button>
           </div>
 
@@ -230,7 +230,7 @@ export function Navigation() {
 
               <div className="pt-4 border-t space-y-2">
                 <Link
-                  href="/login"
+                  href="/dashboard"
                   className="block text-center text-gray-600 hover:text-gray-900"
                 >
                   Login
@@ -239,7 +239,7 @@ export function Navigation() {
                   asChild
                   className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                 >
-                  <Link href="#pricing">Try Free</Link>
+                  <Link href="/dashboard">Try Free</Link>
                 </Button>
               </div>
             </div>

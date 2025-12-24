@@ -115,7 +115,7 @@ export function MobbinNavBar() {
         transition={{ duration: 0.3, delay: 0.1 }}
       >
         <Link
-          href="/login"
+          href="/dashboard"
           className={`w-fit transition-opacity ease-out hover:opacity-80 focus-visible:ring-4 focus-visible:ring-blue-500/50 focus-visible:outline-none rounded-sm font-bold ${textColor}`}
         >
           Log in

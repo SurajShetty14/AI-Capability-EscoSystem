@@ -46,6 +46,8 @@ export interface AssessmentFormData {
   candidates: Candidate[]
   totalQuestions: number
   estimatedDuration: number
+  difficulty?: 'easy' | 'medium' | 'hard' | 'mixed'
+  questionTypes?: ('mcq' | 'coding' | 'subjective')[]
 }
 
 const initialFormData: AssessmentFormData = {
@@ -57,6 +59,8 @@ const initialFormData: AssessmentFormData = {
   candidates: [],
   totalQuestions: 0,
   estimatedDuration: 0,
+  difficulty: 'mixed',
+  questionTypes: [],
 }
 
 export function useAssessmentForm() {

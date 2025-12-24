@@ -149,7 +149,7 @@ export function Pricing() {
                       : ""
                   }`}
                 >
-                  <Link href={plan.name === "ENTERPRISE" ? "#contact" : "#"}>
+                  <Link href="/dashboard">
                     {plan.cta}
                   </Link>
                 </Button>

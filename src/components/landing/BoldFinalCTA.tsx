@@ -56,7 +56,7 @@ export function BoldFinalCTA() {
             size="lg"
             className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-2xl px-12 py-6 text-xl font-bold shadow-[0_0_120px_rgba(139,92,246,0.6)] hover:shadow-[0_0_150px_rgba(139,92,246,0.8)] transition-all group max-w-md mx-auto"
           >
-            <Link href="#pricing" className="flex items-center justify-center space-x-3">
+            <Link href="/dashboard" className="flex items-center justify-center space-x-3">
               <span>Start Your Free Trial</span>
               <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform" />
             </Link>

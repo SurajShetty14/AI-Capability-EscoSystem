@@ -117,7 +117,7 @@ export function GlassFeatureCards() {
 
                     {/* Link */}
                     <Link
-                      href="#"
+                      href="/dashboard"
                       className="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-300 font-medium group-hover:translate-x-1 transition-transform"
                     >
                       <span>{feature.link}</span>

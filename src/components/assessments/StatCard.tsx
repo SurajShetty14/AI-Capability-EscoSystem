@@ -74,8 +74,6 @@ export function StatCard({
   return (
     <motion.div
       initial={{ opacity: 1, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0 }}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
       onClick={onClick}
       className="relative bg-white/80 backdrop-blur-xl border rounded-2xl p-6 transition-all duration-300 hover:shadow-lg z-10"
@@ -87,13 +85,15 @@ export function StatCard({
       animate={
         pulse
           ? {
+              opacity: 1,
+              y: 0,
               boxShadow: [
                 `0 0 0 0 ${colors.accent}40`,
                 `0 0 0 8px ${colors.accent}00`,
                 `0 0 0 0 ${colors.accent}00`,
               ],
             }
-          : {}
+          : { opacity: 1, y: 0 }
       }
       transition={
         pulse
@@ -102,7 +102,7 @@ export function StatCard({
               repeat: Infinity,
               ease: "easeOut",
             }
-          : {}
+          : { duration: 0 }
       }
     >
       {/* Left accent border - 4px for candidates */}

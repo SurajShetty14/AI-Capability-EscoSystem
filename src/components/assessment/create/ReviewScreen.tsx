@@ -32,7 +32,7 @@ export function ReviewScreen({ formData, competencyType, onBack, onEdit, onConti
 
   const experienceLabel = `${formData.experienceRange.label} (${formData.experienceRange.min}-${formData.experienceRange.max} years)`
 
-  const estimatedQuestions = formData.questionTypes.length * 5
+  const estimatedQuestions = formData.totalQuestions || formData.questions.length
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-mint-50/30 to-white -mt-24">

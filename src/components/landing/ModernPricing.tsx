@@ -157,7 +157,7 @@ export function ModernPricing() {
                       : "border-white/20 text-white hover:bg-white/10"
                   } rounded-2xl py-4 group`}
                 >
-                  <Link href={plan.name === "ENTERPRISE" ? "#contact" : "#"} className="flex items-center justify-center space-x-2">
+                  <Link href="/dashboard" className="flex items-center justify-center space-x-2">
                     <span>{plan.cta}</span>
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Link>

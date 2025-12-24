@@ -82,7 +82,7 @@ export function Hero() {
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
-                <Link href="#pricing">Start Free Trial</Link>
+                <Link href="/dashboard">Start Free Trial</Link>
               </Button>
               <Button
                 asChild
@@ -90,7 +90,7 @@ export function Hero() {
                 variant="outline"
                 className="border-2 border-gray-300 hover:border-gray-400"
               >
-                <Link href="#demo" className="flex items-center space-x-2">
+                <Link href="/dashboard" className="flex items-center space-x-2">
                   <Play className="h-5 w-5" />
                   <span>Watch Demo</span>
                 </Link>

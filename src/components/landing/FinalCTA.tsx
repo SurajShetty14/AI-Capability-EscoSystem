@@ -28,7 +28,7 @@ export function FinalCTA() {
               size="lg"
               className="bg-white text-blue-600 hover:bg-gray-100 shadow-lg"
             >
-              <Link href="#pricing">Start Free Trial</Link>
+              <Link href="/dashboard">Start Free Trial</Link>
             </Button>
             <Button
               asChild
@@ -36,7 +36,7 @@ export function FinalCTA() {
               variant="outline"
               className="border-2 border-white text-white hover:bg-white/10"
             >
-              <Link href="#demo">Watch Demo</Link>
+              <Link href="/dashboard">Watch Demo</Link>
             </Button>
           </div>
           <p className="text-sm text-blue-100 mt-6">

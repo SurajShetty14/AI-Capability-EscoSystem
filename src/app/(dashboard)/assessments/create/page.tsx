@@ -98,7 +98,7 @@ export default function CreateAssessmentPage() {
         competencyType={selectedType}
         onBack={() => setCurrentStep('form')}
         onEdit={() => setCurrentStep('form')}
-        onGenerate={handleGenerate}
+        onContinue={handleGenerate}
       />
     )
   }

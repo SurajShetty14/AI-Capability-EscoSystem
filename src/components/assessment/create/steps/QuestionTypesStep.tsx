@@ -38,7 +38,7 @@ const questionTypes = [
 
 export function QuestionTypesStep({ formData, updateField, competencyType }: QuestionTypesStepProps) {
   const handleToggle = (type: 'mcq' | 'coding' | 'subjective') => {
-    const current = formData.questionTypes
+    const current = formData.questionTypes || []
     const updated = current.includes(type)
       ? current.filter(t => t !== type)
       : [...current, type]
@@ -54,7 +54,7 @@ export function QuestionTypesStep({ formData, updateField, competencyType }: Que
       <div className="grid grid-cols-3 gap-6 w-full max-w-[700px]">
         {questionTypes.map((type) => {
           const Icon = type.icon
-          const isSelected = formData.questionTypes.includes(type.id)
+          const isSelected = (formData.questionTypes || []).includes(type.id)
 
           return (
             <motion.button
@@ -100,7 +100,7 @@ export function QuestionTypesStep({ formData, updateField, competencyType }: Que
         })}
       </div>
 
-      {formData.questionTypes.length === 0 && (
+      {(formData.questionTypes || []).length === 0 && (
         <p className="text-[13px] text-text-subtle mt-6">
           Select at least one question type
         </p>
